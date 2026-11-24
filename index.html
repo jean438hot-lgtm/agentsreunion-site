@@ -127,18 +127,19 @@
 </main>
 
 <footer><div class="wrap">© 2026 Agents Réunion · La Réunion</div></footer>
-<script src="config.js"></script>
 <script>
 (function(){
-  var LINK=window.INTAKE_LINK||"";
   var TOKEN="";
-  try{TOKEN=new URL(LINK).searchParams.get("t")||"";}catch(e){}
+  var ready=fetch("config.js",{cache:"no-store"}).then(function(r){return r.text();}).then(function(t){
+    var m=t.match(/[?&]t=([A-Za-z0-9_-]+)/);TOKEN=m?m[1]:"";
+  }).catch(function(){});
   var API="https://taskmaster-ai-livid.vercel.app/api/intake";
   var f=document.getElementById("demandeForm"),msg=document.getElementById("f_msg"),btn=document.getElementById("f_btn");
   f.addEventListener("submit",function(e){
     e.preventDefault();
-    if(!TOKEN){msg.textContent="❌ Formulaire pas encore activé. Écrivez à contact@agentsreunion.org.";return;}
     btn.disabled=true;msg.textContent="Envoi…";
+    ready.then(function(){
+    if(!TOKEN){msg.textContent="❌ Formulaire pas encore activé. Écrivez à contact@agentsreunion.org.";btn.disabled=false;return;}
     var details="E-mail : "+document.getElementById("f_email").value.trim();
     var d=document.getElementById("f_details").value.trim();
     if(d)details+="\n\n"+d;
@@ -151,6 +152,7 @@
       else{return r.json().then(function(j){throw new Error(j.error||"Envoi impossible.");},function(){throw new Error("Envoi impossible.");});}
     }).catch(function(err){msg.textContent="❌ "+(err.message||"Envoi impossible.")+" Vous pouvez écrire à contact@agentsreunion.org.";})
     .then(function(){btn.disabled=false;});
+    });
   });
 })();
 </script>
