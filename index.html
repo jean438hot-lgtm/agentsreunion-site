@@ -34,6 +34,12 @@
   .note{background:var(--card);border-left:4px solid var(--accent);border-radius:10px;padding:16px 18px;color:var(--muted)}
   .contact{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:40px 20px;margin:20px 0 40px}
   .contact p{color:var(--muted);margin:10px 0 22px}
+  .demo{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:center}
+  .demo ul{list-style:none;display:grid;gap:8px;color:var(--muted)}
+  .demo ul li::before{content:"✓ ";color:var(--accent);font-weight:800}
+  .player{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .player p{color:var(--muted);font-size:.9rem;margin-bottom:12px}
+  .player audio{width:100%}
   footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.85rem;text-align:center}
 </style>
 </head>
@@ -55,7 +61,26 @@
       <div class="card"><div class="icon">📬</div><h3>Tri des emails</h3><p>L'assistant lit votre boîte mail, repère l'important et prépare des brouillons de réponse. Rien n'est envoyé sans votre accord.</p></div>
       <div class="card"><div class="icon">🧾</div><h3>Suivi des factures</h3><p>Un tableau de suivi tenu à jour, des rappels d'échéances et des relances d'impayés préparées pour vous.</p></div>
       <div class="card"><div class="icon">🌐</div><h3>Site web</h3><p>Un site clair et rapide pour présenter votre entreprise et être contacté facilement.</p></div>
+      <div class="card"><div class="icon">📞</div><h3>Répondeur téléphonique IA</h3><p>Un assistant vocal qui répond à vos appels, prend le nom, le numéro et le besoin du client, et vous envoie un résumé.</p></div>
       <div class="card"><div class="icon">⚙️</div><h3>Automatisations sur mesure</h3><p>Vous avez une tâche qui revient chaque semaine ? On regarde ensemble comment l'automatiser.</p></div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <h2>Écoutez le répondeur téléphonique IA</h2>
+    <p class="sub">Exemple avec un garage moto : le client veut une vidange, l'assistant prend ses coordonnées.</p>
+    <div class="demo">
+      <ul>
+        <li>Répond à chaque appel, même quand vous êtes occupé</li>
+        <li>Prend le nom, le numéro et la demande du client</li>
+        <li>Vous envoie un résumé de l'appel sur Telegram</li>
+        <li>Ne donne ni prix ni délai : un responsable rappelle</li>
+        <li>Dit clairement qu'il est un assistant IA</li>
+      </ul>
+      <div class="player">
+        <p>🎧 Démonstration de 40 secondes (voix de synthèse)</p>
+        <audio controls preload="none" src="demo-repondeur.mp3">Votre navigateur ne peut pas lire l'audio.</audio>
+      </div>
     </div>
   </section>
 
