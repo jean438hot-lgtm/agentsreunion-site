@@ -40,6 +40,12 @@
   .player{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
   .player p{color:var(--muted);font-size:.9rem;margin-bottom:12px}
   .player audio{width:100%}
+  .form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:12px;max-width:560px}
+  .form input[type=text],.form input[type=email],.form textarea{width:100%;background:#0b1220;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px 14px;font:inherit}
+  .form label.c{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:.9rem}
+  .form button{border:0;cursor:pointer;font:inherit}
+  .form .msg{font-size:.95rem}
+  .hp{position:absolute;left:-9999px;height:0;overflow:hidden}
   footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.85rem;text-align:center}
 </style>
 </head>
@@ -98,6 +104,21 @@
     <div class="note"><strong style="color:var(--text)">Votre confiance d'abord.</strong> L'assistant ne répond pas à votre place aux expéditeurs inconnus : il vous prévient et vous décidez. Il n'est pas un expert-comptable : il vous aide à organiser et à relancer, la comptabilité reste entre les mains de votre professionnel.</div>
   </section>
 
+  <section id="demande">
+    <h2>Envoyer une demande</h2>
+    <p class="sub">Décrivez la tâche à automatiser. Vous recevrez une réponse par e-mail.</p>
+    <form class="form" id="demandeForm">
+      <input type="text" id="f_nom" placeholder="Votre nom" maxlength="100" required>
+      <input type="email" id="f_email" placeholder="Votre e-mail" maxlength="150" required>
+      <input type="text" id="f_demande" placeholder="Votre demande en une phrase" maxlength="200" required>
+      <textarea id="f_details" placeholder="Détails (facultatif)" rows="4" maxlength="1500"></textarea>
+      <div class="hp" aria-hidden="true"><input type="text" id="f_website" tabindex="-1" autocomplete="off"></div>
+      <label class="c"><input type="checkbox" id="f_ok" required> J'accepte que mes informations servent uniquement à traiter ma demande.</label>
+      <button class="btn" type="submit" id="f_btn">Envoyer ma demande</button>
+      <p class="msg" id="f_msg" role="status"></p>
+    </form>
+  </section>
+
   <div class="contact">
     <h2>Parlons de votre projet</h2>
     <p>Un échange pour voir ce qui peut être automatisé chez vous.</p>
@@ -106,5 +127,28 @@
 </main>
 
 <footer><div class="wrap">© 2026 Agents Réunion · La Réunion</div></footer>
+<script>
+(function(){
+  var TOKEN="COLLE_ICI_LE_JETON";
+  var API="https://taskmaster-ai-livid.vercel.app/api/intake";
+  var f=document.getElementById("demandeForm"),msg=document.getElementById("f_msg"),btn=document.getElementById("f_btn");
+  f.addEventListener("submit",function(e){
+    e.preventDefault();
+    btn.disabled=true;msg.textContent="Envoi…";
+    var details="E-mail : "+document.getElementById("f_email").value.trim();
+    var d=document.getElementById("f_details").value.trim();
+    if(d)details+="\n\n"+d;
+    fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      token:TOKEN,name:document.getElementById("f_nom").value.trim(),
+      title:document.getElementById("f_demande").value.trim(),description:details,
+      website:document.getElementById("f_website").value
+    })}).then(function(r){
+      if(r.ok){f.reset();msg.textContent="✅ Merci, votre demande a bien été envoyée.";}
+      else{return r.json().then(function(j){throw new Error(j.error||"Envoi impossible.");},function(){throw new Error("Envoi impossible.");});}
+    }).catch(function(err){msg.textContent="❌ "+(err.message||"Envoi impossible.")+" Vous pouvez écrire à contact@agentsreunion.org.";})
+    .then(function(){btn.disabled=false;});
+  });
+})();
+</script>
 </body>
 </html>
