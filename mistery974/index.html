@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mistery974 – 50 énigmes, un coffre à ouvrir</title>
+<meta name="description" content="Mistery974 : 50 niveaux d'énigmes inspirées de La Réunion. Saurez-vous ouvrir le coffre ?">
+<meta property="og:title" content="Mistery974 – 50 énigmes, un coffre à ouvrir">
+<meta property="og:description" content="50 niveaux d'énigmes inspirées de La Réunion. Jusqu'où irez-vous ?">
+<meta property="og:image" content="cover.jpg">
+<style>
+:root{--bg:#050b18;--card:#0e1a30;--line:#23365a;--text:#eef3fb;--muted:#9fb0cc;--pink:#ff3d81;--gold:#ffc83d;--teal:#2dd4bf}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#10305a 0%,var(--bg) 60%);color:var(--text);min-height:100vh;line-height:1.5}
+.wrap{max-width:520px;margin:0 auto;padding:18px 18px 40px}
+.hide{display:none!important}
+h1{font-size:2.1rem;letter-spacing:.5px}
+h1 span{color:var(--gold)}
+.cover{width:100%;border-radius:20px;border:1px solid var(--line);display:block;margin:14px 0 18px;box-shadow:0 0 40px rgba(255,61,129,.25)}
+.lead{color:var(--muted);margin-bottom:18px}
+.btn{display:block;width:100%;border:0;cursor:pointer;font:inherit;font-weight:800;font-size:1.05rem;color:#1b1200;background:linear-gradient(90deg,var(--gold),#ff9d3d);padding:15px;border-radius:14px;margin-top:10px}
+.btn.alt{background:var(--card);color:var(--text);border:1px solid var(--line);font-weight:600}
+.btn:disabled{opacity:.5}
+.top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.bar{height:8px;background:var(--card);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .4s}
+.tier{display:inline-block;margin:18px 0 8px;font-size:.8rem;color:var(--teal);border:1px solid var(--teal);border-radius:99px;padding:3px 12px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px;font-size:1.2rem;font-weight:600;margin-bottom:14px;white-space:pre-line}
+input[type=text],input[type=email]{width:100%;background:#0a1426;border:1px solid var(--line);border-radius:12px;color:var(--text);padding:14px;font:inherit;font-size:1.1rem;margin-top:8px}
+.msg{min-height:1.6em;margin-top:10px;font-weight:600}
+.msg.ok{color:var(--teal)}.msg.ko{color:var(--pink)}
+.hint{margin-top:10px;color:var(--gold);font-size:.95rem}
+.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px}
+.card label{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:.88rem;margin-top:10px}
+.small{color:var(--muted);font-size:.85rem;margin-top:12px}
+.big{font-size:3rem;text-align:center;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="home">
+  <h1>Mistery<span>974</span></h1>
+  <img class="cover" src="cover.jpg" alt="Un coffre au trésor sur une île mystérieuse">
+  <p class="lead">50 niveaux d'énigmes inspirées de La Réunion : culture, logique, codes secrets. Une seule bonne réponse par niveau. Saurez-vous ouvrir le coffre ?</p>
+  <button class="btn" id="play">Jouer</button>
+  <button class="btn alt hide" id="restart">Recommencer à zéro</button>
+  <p class="small">Votre progression est gardée sur votre téléphone. À la fin, vous pourrez envoyer votre score pour participer.</p>
+</section>
+
+<section id="game" class="hide">
+  <div class="top"><span id="lvl">Niveau 1 / 50</span><span id="hints">Indices : 0</span></div>
+  <div class="bar"><i id="prog"></i></div>
+  <span class="tier" id="tier"></span>
+  <div class="q" id="q"></div>
+  <input type="text" id="ans" placeholder="Votre réponse" autocomplete="off" autocapitalize="off" enterkeyhint="go">
+  <button class="btn" id="ok">Valider</button>
+  <button class="btn alt" id="hint">💡 Un indice (compte dans le score)</button>
+  <div class="hint hide" id="hintTxt"></div>
+  <div class="msg" id="msg" role="status"></div>
+  <button class="btn alt" id="send">Envoyer mon score pour participer</button>
+</section>
+
+<section id="win" class="hide">
+  <div class="big">🏴‍☠️🗝️</div>
+  <h1 style="text-align:center">Coffre ouvert !</h1>
+  <p class="lead" style="text-align:center;margin-top:8px" id="winTxt"></p>
+</section>
+
+<section id="part" class="card hide">
+  <h2 style="font-size:1.15rem">Participer</h2>
+  <p class="small" style="margin-top:4px">Envoyez votre score. Il sera ajouté à la liste des participants.</p>
+  <input type="text" id="pseudo" placeholder="Votre pseudo" maxlength="40">
+  <input type="email" id="mail" placeholder="E-mail (facultatif, pour être prévenu)" maxlength="120">
+  <label><input type="checkbox" id="cons"> J'accepte que mon pseudo et mon score soient utilisés pour le jeu Mistery974.</label>
+  <div style="position:absolute;left:-9999px"><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
+  <button class="btn" id="sendNow">Envoyer</button>
+  <div class="msg" id="pmsg" role="status"></div>
+</section>
+
+</div>
+
+<script>
+var L=[
+["Découverte","Quel est le numéro du département de La Réunion ?",["974"],"C'est aussi dans le nom du jeu."],
+["Découverte","Quelle est la préfecture de La Réunion ?",["saintdenis","denis"],"Elle porte le nom d'un saint, au nord de l'île."],
+["Découverte","Quel océan entoure La Réunion ?",["indien","oceanindien","loceanindien"],"Il porte le nom d'un pays d'Asie."],
+["Découverte","Quel volcan toujours actif domine l'île ?\nLe Piton de la ...",["fournaise","pitondelafournaise"],"Elle sert à cuire ou à fondre."],
+["Découverte","Fruit rouge à la peau rugueuse, star de décembre : le ...",["litchi","letchi","lychee"],"Ça commence par L."],
+["Découverte","Combien de cirques compte La Réunion ?",["3","trois"],"Compte : Mafate, Salazie, Cilaos."],
+["Découverte","Quelle épice en gousses est pollinisée à la main depuis 1841, grâce à Edmond Albius ?",["vanille","lavanille"],"Elle parfume les gâteaux et le rhum arrangé."],
+["Découverte","Saucisses fumées, tomates, oignons, gingembre, avec du riz : le ... saucisse",["rougail"],"Il pique un peu."],
+["Découverte","974 + 26 = ?",["1000","mille"],"Un chiffre rond."],
+["Découverte","Quel est le plus haut sommet de l'île ?\nLe Piton des ...",["neiges","pitondesneiges"],"Elles sont froides, mais rares sur l'île."],
+
+["Logique","Suite logique : 2, 4, 8, 16, ... ?",["32"],"On double à chaque fois."],
+["Logique","Suite logique : 1, 1, 2, 3, 5, 8, ... ?",["13"],"Additionne les deux nombres précédents."],
+["Logique","J'ai des villes mais pas de maisons, des routes mais pas de voitures, des mers sans eau. Qui suis-je ?",["carte","unecarte","lacarte","map"],"On me déplie pour chercher un trésor."],
+["Logique","Qu'est-ce qui monte tout le temps mais ne redescend jamais ?",["age","lage"],"Il augmente à chaque anniversaire."],
+["Logique","Un coffre contient 3 pièces d'or. Vous en prenez 2. Combien en avez-vous ?",["2","deux"],"On ne demande pas combien il en reste."],
+["Logique","Combien de mois de l'année ont au moins 28 jours ?",["12","douze","tous","touslesmois"],"Pensez au minimum."],
+["Logique","5 pirates creusent 5 trous en 5 minutes. Combien de pirates pour creuser 100 trous en 100 minutes ?",["5","cinq"],"Combien de trous un pirate creuse-t-il en 5 minutes ?"],
+["Logique","Suite logique : 3, 6, 12, 24, ... ?",["48"],"On double."],
+["Logique","Qu'est-ce qui a des touches mais n'ouvre aucune porte ?",["piano","clavier","unpiano","unclavier"],"On en joue avec les doigts."],
+["Logique","Calculez : (7 × 8) − (6 × 9)",["2","deux"],"56 − 54."],
+
+["Codes secrets","Code de César : chaque lettre est décalée de +1.\nDPGGSF\nQuel mot se cache derrière ?",["coffre"],"Reculez chaque lettre d'un cran dans l'alphabet."],
+["Codes secrets","A = 1, B = 2, C = 3...\n3 – 1 – 18 – 20 – 5",["carte"],"C est la 3e lettre."],
+["Codes secrets","Lisez à l'envers :\nELIBOM",["mobile"],"Ça tient dans la poche."],
+["Codes secrets","Morse :\n... --- .-.. . .. .-..\n(S = ...  O = ---  L = .-..  E = .  I = ..)",["soleil"],"Il brille sur l'île."],
+["Codes secrets","Chiffres romains :\nMCMLXXIV = ?",["1974"],"M = 1000, CM = 900, L = 50, X = 10, IV = 4."],
+["Codes secrets","Binaire : quel nombre représente\n1111001110 ?",["974"],"Additionnez 512, 256, 128, 64, 8, 4 et 2."],
+["Codes secrets","Remettez les lettres dans l'ordre :\nN – U – O – I – E – R – N",["reunion","lareunion"],"C'est l'île du jeu."],
+["Codes secrets","Première lettre de chaque mot :\nPlage, Île, Tortue, Océan, Nuage",["piton"],"Un sommet de l'île."],
+["Codes secrets","Suite logique : 1, 4, 9, 16, 25, ... ?",["36"],"Ce sont des carrés : 1×1, 2×2, 3×3..."],
+["Codes secrets","Suite logique : 2, 3, 5, 7, 11, 13, ... ?",["17"],"Ce sont des nombres premiers."],
+
+["Expert","Quelle est la capitale de Madagascar ?",["antananarivo","tananarive"],"On l'appelle souvent « Tana »."],
+["Expert","Quelle île voisine, au nord-est de La Réunion, faisait partie des Mascareignes ?",["maurice","ilemaurice","lilemaurice","mauritius"],"Le dodo y vivait."],
+["Expert","Avant 1793, l'île s'appelait l'île ...",["bourbon"],"Comme une famille royale de France."],
+["Expert","Quelle musique traditionnelle réunionnaise, classée à l'UNESCO en 2009, se joue avec le roulèr ?",["maloya","lemaloya"],"Ça commence par MA."],
+["Expert","« Fèt Kaf » est férié à La Réunion le ... décembre. Quel jour ?",["20","vingt"],"Entre le 19 et le 21."],
+["Expert","Combien de caractères (lettres et chiffres) dans MISTERY974 ?",["10","dix"],"7 lettres + 3 chiffres."],
+["Expert","Je suis plein de trous mais je retiens l'eau. Qui suis-je ?",["eponge","uneeponge","leponge"],"On me trouve dans la salle de bains."],
+["Expert","Plus je sèche, plus je suis mouillée. Qui suis-je ?",["serviette","uneserviette","laserviette"],"On m'utilise après la douche."],
+["Expert","Je parle sans bouche et j'entends sans oreilles. Qui suis-je ?",["echo","lecho","unecho"],"Dans les cirques, on me rencontre souvent."],
+["Expert","Je n'ai pas de poumons mais j'ai besoin d'air. L'eau me tue. Qui suis-je ?",["feu","lefeu"],"Il brûle."],
+
+["Maître pirate","Trois coffres alignés : le rouge est à gauche du bleu, le vert est à droite du bleu. Lequel est au milieu ?",["bleu","lebleu","lecoffrebleu"],"Dessinez-les."],
+["Maître pirate","Suite logique : 1, 2, 4, 7, 11, 16, ... ?",["22"],"On ajoute 1, puis 2, puis 3..."],
+["Maître pirate","Suite logique : 2, 6, 12, 20, 30, ... ?",["42"],"2 = 1×2, 6 = 2×3, 12 = 3×4..."],
+["Maître pirate","3 chats attrapent 3 souris en 3 minutes. Combien de chats pour 9 souris en 9 minutes ?",["3","trois"],"Combien de souris un chat attrape-t-il en 3 minutes ?"],
+["Maître pirate","Quel nombre multiplié par lui-même, plus 1, donne 82 ?",["9","neuf"],"82 − 1 = 81."],
+["Maître pirate","Une horloge sonne 6 coups en 5 secondes. Combien de secondes pour sonner 12 coups ?",["11","onze"],"Comptez les intervalles, pas les coups."],
+["Maître pirate","Mot de 5 lettres, identique à l'endroit et à l'envers : il repère les avions et les bateaux.",["radar","leradar"],"Il se lit pareil dans les deux sens."],
+["Maître pirate","Additionnez tous les nombres de 1 à 20.",["210"],"(20 × 21) ÷ 2."],
+["Maître pirate","Quel est le premier mot du nom du jeu (avant 974) ?",["mistery"],"Il est écrit sur la page d'accueil."],
+["Maître pirate","Dernier coffre ! Le code est le numéro du département (974) + le nombre total de niveaux.",["1024"],"974 + 50."]
+];
+var N=L.length,KEY="mistery974.v1";
+var S={lvl:0,hints:0,t:0,done:false,usedHint:false};
+function $(i){return document.getElementById(i)}
+function norm(s){return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]/g,"")}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{var d=JSON.parse(localStorage.getItem(KEY)||"null");if(d&&typeof d.lvl==="number")S=Object.assign(S,d)}catch(e){}}
+var start=Date.now();
+function tick(){var n=Date.now();S.t+=Math.round((n-start)/1000);start=n}
+function show(id){["home","game","win"].forEach(function(x){$(x).classList.toggle("hide",x!==id)})}
+function render(){
+  if(S.lvl>=N){S.done=true;save();return win()}
+  var l=L[S.lvl];
+  $("lvl").textContent="Niveau "+(S.lvl+1)+" / "+N;
+  $("hints").textContent="Indices : "+S.hints;
+  $("prog").style.width=(S.lvl/N*100)+"%";
+  $("tier").textContent=l[0];
+  $("q").textContent=l[1];
+  $("ans").value="";$("msg").textContent="";$("msg").className="msg";
+  $("hintTxt").classList.add("hide");S.usedHint=false;
+  $("send").classList.toggle("hide",S.lvl<5);
+  show("game");$("part").classList.add("hide");
+}
+function win(){
+  tick();var m=Math.max(1,Math.round(S.t/60));
+  $("winTxt").textContent="Bravo ! 50 niveaux terminés en "+m+" min, avec "+S.hints+" indice(s). Envoyez votre score pour participer.";
+  show("win");$("part").classList.remove("hide");
+}
+function check(){
+  var v=norm($("ans").value);if(!v)return;
+  var l=L[S.lvl],good=l[2].map(norm).indexOf(v)>-1;
+  if(good){
+    $("msg").textContent="✅ Bonne réponse !";$("msg").className="msg ok";
+    S.lvl++;save();$("ok").disabled=true;
+    setTimeout(function(){$("ok").disabled=false;render()},650);
+  }else{
+    $("msg").textContent="❌ Ce n'est pas ça, réessayez.";$("msg").className="msg ko";
+    var q=$("q");q.classList.remove("shake");void q.offsetWidth;q.classList.add("shake");
+  }
+}
+$("play").onclick=function(){start=Date.now();render()};
+$("restart").onclick=function(){S={lvl:0,hints:0,t:0,done:false,usedHint:false};save();start=Date.now();render()};
+$("ok").onclick=check;
+$("ans").addEventListener("keydown",function(e){if(e.key==="Enter")check()});
+$("hint").onclick=function(){
+  if(!S.usedHint){S.usedHint=true;S.hints++;$("hints").textContent="Indices : "+S.hints;save()}
+  $("hintTxt").textContent="💡 "+L[S.lvl][3];$("hintTxt").classList.remove("hide");
+};
+$("send").onclick=function(){tick();$("part").classList.remove("hide");$("part").scrollIntoView({behavior:"smooth"})};
+var TOKEN="",ready=fetch("../config.js",{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/[?&]t=([A-Za-z0-9_-]+)/);TOKEN=m?m[1]:""}).catch(function(){});
+$("sendNow").onclick=function(){
+  var p=$("pseudo").value.trim(),pm=$("pmsg");
+  if(!p){pm.textContent="Entrez un pseudo.";pm.className="msg ko";return}
+  if(!$("cons").checked){pm.textContent="Cochez la case pour participer.";pm.className="msg ko";return}
+  $("sendNow").disabled=true;pm.textContent="Envoi…";pm.className="msg";
+  tick();var lv=Math.min(S.lvl,N);
+  ready.then(function(){
+    if(!TOKEN){pm.textContent="Envoi indisponible pour le moment.";pm.className="msg ko";$("sendNow").disabled=false;return}
+    var d="Niveau atteint : "+lv+"/"+N+"\nIndices : "+S.hints+"\nTemps : "+Math.max(1,Math.round(S.t/60))+" min"+($("mail").value.trim()?"\nE-mail : "+$("mail").value.trim():"");
+    return fetch("https://taskmaster-ai-livid.vercel.app/api/intake",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:TOKEN,name:p,title:("Mistery974 – "+p+" – niveau "+lv+"/"+N).slice(0,200),description:d,website:$("website").value})})
+    .then(function(r){if(r.ok){pm.textContent="✅ Score envoyé, merci d'avoir participé !";pm.className="msg ok"}else{throw 0}})
+  }).catch(function(){pm.textContent="Envoi impossible. Réessayez plus tard.";pm.className="msg ko";$("sendNow").disabled=false});
+};
+load();
+if(S.lvl>0&&S.lvl<N){$("play").textContent="Reprendre au niveau "+(S.lvl+1);$("restart").classList.remove("hide")}
+if(S.done||S.lvl>=N){S.lvl=N;win()}
+</script>
+</body>
+</html>
