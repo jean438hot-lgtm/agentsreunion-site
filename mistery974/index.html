@@ -29,7 +29,9 @@ h1 span{color:var(--gold)}
 input[type=text],input[type=email]{width:100%;background:#0a1426;border:1px solid var(--line);border-radius:12px;color:var(--text);padding:14px;font:inherit;font-size:1.1rem;margin-top:8px}
 .msg{min-height:1.6em;margin-top:10px;font-weight:600}
 .msg.ok{color:var(--teal)}.msg.ko{color:var(--pink)}
-.hint{margin-top:10px;color:var(--gold);font-size:.95rem}
+.hint{margin-top:12px;text-align:center;background:var(--card);border:1px dashed var(--gold);border-radius:16px;padding:14px}
+.hint .pic{font-size:2.1rem;line-height:1.5;white-space:pre-line;word-break:break-word}
+.hint .cap{color:var(--gold);font-size:.9rem;margin-top:4px}
 .shake{animation:sh .35s}
 @keyframes sh{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px}
@@ -57,7 +59,7 @@ input[type=text],input[type=email]{width:100%;background:#0a1426;border:1px soli
   <div class="q" id="q"></div>
   <input type="text" id="ans" placeholder="Votre réponse" autocomplete="off" autocapitalize="off" enterkeyhint="go">
   <button class="btn" id="ok">Valider</button>
-  <button class="btn alt" id="hint">💡 Un indice (compte dans le score)</button>
+  <button class="btn alt" id="hint">🖼️ Un indice en images (compte dans le score)</button>
   <div class="hint hide" id="hintTxt"></div>
   <div class="msg" id="msg" role="status"></div>
   <button class="btn alt" id="send">Envoyer mon score pour participer</button>
@@ -139,6 +141,7 @@ var L=[
 ["Maître pirate","Quel est le premier mot du nom du jeu (avant 974) ?",["mistery"],"Il est écrit sur la page d'accueil."],
 ["Maître pirate","Dernier coffre ! Le code est le numéro du département (974) + le nombre total de niveaux.",["1024"],"974 + 50."]
 ];
+var E=["🇫🇷🏝️🔢", "🏙️⛪🌅", "🌊🌏🧭", "🌋🔥♨️", "🔴🌰🎄", "⛰️⛰️⛰️", "🫘🌼✋", "🌭🍅🧅🍚🌶️", "9️⃣7️⃣4️⃣ ➕ 2️⃣6️⃣", "❄️⛰️🔝", "2️⃣ ➡️ 4️⃣ ➡️ 8️⃣ ➡️ 1️⃣6️⃣\n✖️2️⃣ ✖️2️⃣ ✖️2️⃣", "🐇 + 🐇 = 🐇🐇\n1️⃣ 1️⃣ 2️⃣ 3️⃣ 5️⃣ 8️⃣", "🗺️🏙️🌲🌊", "🎂🎈📈", "💰💰💰 ✋ ➖2️⃣", "📅 ✖️ 1️⃣2️⃣", "🏴‍☠️🏴‍☠️🏴‍☠️🏴‍☠️🏴‍☠️ ⏱️ 1 pirate = 1 🕳️ / 5 min", "3️⃣ ➡️ 6️⃣ ➡️ 1️⃣2️⃣ ➡️ 2️⃣4️⃣\n✖️2️⃣", "🎹👆🎶", "7️⃣✖️8️⃣ ➖ 6️⃣✖️9️⃣", "🔤 D ➡️ C\n🔤 P ➡️ O", "🔠 A=1️⃣ B=2️⃣ C=3️⃣", "🪞📱", "🆘 ➡️ ☀️❓", "🏛️ M=1000  C=100\nL=50  X=10  V=5  I=1", "💻 0️⃣1️⃣ ➡️ 🔢", "🔀🏝️🇷🇪", "🏖️🏝️🐢🌊☁️", "⬛ 1×1  🔲 2×2  🔳 3×3", "🔢 2 3 5 7 11 13 ➡️ ⭐ premiers", "🇲🇬🏙️❓", "🇲🇺🦤", "👑⚜️🏝️", "🏛️🥁🎶", "⛓️💥📅", "🔤7️⃣ + 🔢3️⃣", "🧽🕳️💧", "🛁🏖️🧴", "⛰️🗣️🔁", "🔥🫁❌ 💧☠️", "🟥 ◀ ❓ ▶ 🟩", "1️⃣ ➕1️⃣ ➕2️⃣ ➕3️⃣ ➕4️⃣ ➕5️⃣", "1×2  2×3  3×4  4×5  5×6", "🐱🐱🐱 🐭🐭🐭 ⏱️3  ➡️  🐭×9 ⏱️9", "◻️ × ◻️ + 1️⃣ = 8️⃣2️⃣", "🕐🔔×6 = 5 ⏱️ (intervalles)", "📡🚢✈️ 🔁", "➕ 1️⃣…2️⃣0️⃣ 🧮", "🔤 M·I·S·T·E·R·Y", "🗝️🔐 9️⃣7️⃣4️⃣ ➕ 5️⃣0️⃣"];
 var N=L.length,KEY="mistery974.v1";
 var S={lvl:0,hints:0,t:0,done:false,usedHint:false};
 function $(i){return document.getElementById(i)}
@@ -184,7 +187,7 @@ $("ok").onclick=check;
 $("ans").addEventListener("keydown",function(e){if(e.key==="Enter")check()});
 $("hint").onclick=function(){
   if(!S.usedHint){S.usedHint=true;S.hints++;$("hints").textContent="Indices : "+S.hints;save()}
-  $("hintTxt").textContent="💡 "+L[S.lvl][3];$("hintTxt").classList.remove("hide");
+  $("hintTxt").innerHTML='<div class="pic"></div><div class="cap"></div>';$("hintTxt").querySelector(".pic").textContent=E[S.lvl];$("hintTxt").querySelector(".cap").textContent=L[S.lvl][3];$("hintTxt").classList.remove("hide");
 };
 $("send").onclick=function(){tick();$("part").classList.remove("hide");$("part").scrollIntoView({behavior:"smooth"})};
 var TOKEN="",ready=fetch("../config.js",{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/[?&]t=([A-Za-z0-9_-]+)/);TOKEN=m?m[1]:""}).catch(function(){});
