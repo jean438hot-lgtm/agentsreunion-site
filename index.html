@@ -146,7 +146,7 @@
     if(d)details+="\n\n"+d;
     var hp=document.getElementById("f_website").value;
     var nom=document.getElementById("f_nom").value.trim(),titre=document.getElementById("f_demande").value.trim();
-    if(!hp){try{fetch(ALERT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:nom,title:titre,description:details,website:hp})}).catch(function(){});}catch(x){}}
+    if(!hp){try{var u=new URLSearchParams();u.append("name",nom);u.append("title",titre);u.append("description",details);u.append("website",hp);fetch(ALERT,{method:"POST",mode:"no-cors",body:u}).catch(function(){});}catch(x){}}
     fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       token:TOKEN,name:nom,
       title:titre,description:details,
