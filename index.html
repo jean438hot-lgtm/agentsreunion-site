@@ -134,6 +134,7 @@
     var m=t.match(/[?&]t=([A-Za-z0-9_-]+)/);TOKEN=m?m[1]:"";
   }).catch(function(){});
   var API="https://taskmaster-ai-livid.vercel.app/api/intake";
+  var ALERT="https://agentsreunion.app.n8n.cloud/webhook/demande-site-7c41e9a2b6d03f58";
   var f=document.getElementById("demandeForm"),msg=document.getElementById("f_msg"),btn=document.getElementById("f_btn");
   f.addEventListener("submit",function(e){
     e.preventDefault();
@@ -143,10 +144,13 @@
     var details="E-mail : "+document.getElementById("f_email").value.trim();
     var d=document.getElementById("f_details").value.trim();
     if(d)details+="\n\n"+d;
+    var hp=document.getElementById("f_website").value;
+    var nom=document.getElementById("f_nom").value.trim(),titre=document.getElementById("f_demande").value.trim();
+    if(!hp){try{fetch(ALERT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:nom,title:titre,description:details,website:hp})}).catch(function(){});}catch(x){}}
     fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      token:TOKEN,name:document.getElementById("f_nom").value.trim(),
-      title:document.getElementById("f_demande").value.trim(),description:details,
-      website:document.getElementById("f_website").value
+      token:TOKEN,name:nom,
+      title:titre,description:details,
+      website:hp
     })}).then(function(r){
       if(r.ok){f.reset();msg.textContent="✅ Merci, votre demande a bien été envoyée.";}
       else{return r.json().then(function(j){throw new Error(j.error||"Envoi impossible.");},function(){throw new Error("Envoi impossible.");});}
